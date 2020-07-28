@@ -1,0 +1,8 @@
+{
+    "editor.formatOnSave": false,
+    "editor.tabSize": 2,
+    "eslint.trace.server": "messages",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
+}
