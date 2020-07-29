@@ -2,7 +2,7 @@ import Koa from 'koa'
 import KoaRouter from 'koa-router'
 import parser from './parser'
 
-export { Controller, Get, Post, Route } from './decorators/route'
+export { Controller, Middleware, Get, Post, Route } from './decorators/route'
 
 export default async function(controllerPath: string, app: Koa, router?: KoaRouter): Promise<Koa> {
   const koaApp = app || new Koa()

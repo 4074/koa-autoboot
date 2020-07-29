@@ -1,12 +1,10 @@
 {
   "name": "koa-autoboot",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Auto bootstrap controllers for the koa app.",
-  "main": "lib/index.js",
-  "module": "./es/index",
+  "main": "build/index.js",
   "files": [
-    "es",
-    "lib"
+    "build"
   ],
   "peerDependencies": {
     "koa": "^2",
@@ -26,7 +24,6 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.4",
-    "father": "^2.29.5",
     "koa": "^2.13.0",
     "koa-router": "^9.1.0",
     "prettier": "^2.0.5",
@@ -37,13 +34,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test-server": "ts-node test/index.ts",
-    "build": "father build"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/4074/koa-boot.git"
+    "url": "git+https://github.com/4074/koa-autoboot.git"
   },
-  "keywords": ["koa", "koa-autoboot", "nodejs", "bootstrap", "spring-boot"],
+  "keywords": [
+    "koa",
+    "koa-autoboot",
+    "nodejs",
+    "bootstrap",
+    "spring-boot"
+  ],
   "author": "win.ten.in@gmail.com",
   "license": "ISC",
   "bugs": {
