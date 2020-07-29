@@ -1,7 +1,22 @@
 /* eslint-disable no-param-reassign */
-import { Middleware as IMiddleware } from 'koa'
+import Koa from 'koa'
+import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from '../keys'
 
-export type HTTPMethod = 'GET' | 'POST'
+export type HTTPMethod =
+  | 'POST'
+  | 'GET'
+  | 'PUT'
+  | 'DELETE'
+  | 'OPTIONS'
+  | 'HEAD'
+  | 'TRACE'
+  | 'CONNECT'
+  | 'PATCH'
+
+export interface RouteOption {
+  method: HTTPMethod
+  path: string
+}
 
 export interface ClassDecorator {
   (target: NewableFunction): void
@@ -15,22 +30,19 @@ export interface MethodDecorator {
   ): TypedPropertyDescriptor<any>
 }
 
-export const ROUTER_KEY = Symbol('Router')
-export const MIDDLEWARE_KEY = Symbol('Middleware')
-export const ROUTE_KEY = Symbol('Route')
-
-function getRouterNameFromClass(target: NewableFunction): string {
+function getControllerNameFromClass(target: NewableFunction): string {
   return target.name.toLowerCase().replace(/controller$/, '')
 }
 
-export function Router(path?: string): ClassDecorator {
+export function Controller(path?: string): ClassDecorator {
   return (target) => {
-    target[ROUTER_KEY] = path || getRouterNameFromClass(target)
+    const p = path || getControllerNameFromClass(target)
+    target[CONTROLLER_KEY] = /^\//.test(p) ? p : `/${p}`
   }
 }
 
 export function Middleware(
-  middleware: IMiddleware | IMiddleware[]
+  middleware: Koa.Middleware | Koa.Middleware[]
 ): MethodDecorator {
   const ms = Array.isArray(middleware) ? middleware : [middleware]
   return (target, key, descriptor) => {
@@ -42,18 +54,35 @@ export function Middleware(
   }
 }
 
+function createRouteOptions(
+  method: HTTPMethod | HTTPMethod[] = ['GET', 'POST'],
+  path?: string
+): RouteOption[] {
+  const options = []
+  if (Array.isArray(method)) {
+    for (const m of method) {
+      options.concat(createRouteOptions(m, path))
+    }
+  } else {
+    options.push({
+      method,
+      path: /^\//.test(path) ? path : `/${path}`
+    })
+  }
+  return options
+}
+
 export function Route(
   method: HTTPMethod | HTTPMethod[] = ['GET', 'POST'],
   path?: string
 ): MethodDecorator {
   return (target, key, descriptor) => {
-    const options = {
-      path: path || key,
-      method: Array.isArray(method) ? method : [method]
-    }
+    const options = createRouteOptions(method, path || key)
 
     if (!descriptor.value[ROUTE_KEY]) descriptor.value[ROUTE_KEY] = []
-    descriptor.value[ROUTE_KEY].push(options)
+    for (const op of options) {
+      descriptor.value[ROUTE_KEY].push(op)
+    }
 
     return descriptor
   }
