@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import Koa from 'koa'
-import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from '../keys'
+import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from '../consts'
 
 export type HTTPMethod =
   | 'POST'

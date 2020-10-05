@@ -1,18 +1,38 @@
 import Koa from 'koa'
-import KoaRouter from 'koa-router'
-import parser from './parser'
+import parser, { Route } from './parser'
 
 export { Controller, Middleware, Get, Post, Route } from './decorators/route'
 
-export default async function(controllerPath: string, app: Koa, router?: KoaRouter): Promise<Koa> {
-  const koaApp = app || new Koa()
-  const koaRouter = router || new KoaRouter()
+export interface KoaAutobootOptions {
+  dir: string
+  prefix?: string
+}
 
-  const routes = await parser(controllerPath)
-  for (const [routePath, route] of Object.entries(routes)) {
-    koaRouter.use(routePath, route.routes(), route.allowedMethods())
+export default function autoboot(options: KoaAutobootOptions): Koa.Middleware {
+  let routes: Route[] = []
+  parser(options.dir, options.prefix)
+    .then((r) => {
+      routes = r
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error(err)
+    })
+
+  return async (ctx: Koa.Context, next: () => any): Promise<any> => {
+    for (const { method, regexp, handler, middlewares } of routes) {
+      if (ctx.method === method && regexp.test(ctx.path)) {
+        for (const m of middlewares) {
+          // TODO: pass a real next funciton
+          // eslint-disable-next-line no-await-in-loop
+          await m(ctx, async () => {
+            /**/
+          })
+        }
+        // eslint-disable-next-line no-await-in-loop
+        return handler(ctx, next)
+      }
+    }
+    await next()
   }
-  koaApp.use(koaRouter.routes())
-
-  return koaApp
 }
