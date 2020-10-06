@@ -7,7 +7,6 @@ export interface Route {
   regexp: RegExp
   path: string
   method: string
-  handler: (...args: any) => any
   middlewares: Koa.Middleware[]
 }
 
@@ -58,8 +57,7 @@ export default async function parser(
           regexp: pathToRegexp(finalPath),
           path: finalPath,
           method,
-          handler,
-          middlewares
+          middlewares: [...middlewares, handler]
         })
 
         // eslint-disable-next-line no-console

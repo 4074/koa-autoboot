@@ -1,0 +1,10 @@
+{
+	"verbose": true,
+	"debug": false,
+	"exec": "node -r ts-node/register -r tsconfig-paths/register --inspect=4009 ./test/index.ts",
+	"ignore": [
+	],
+	"watch": ["./src", "./test"],
+	"ext": "ts",
+	"inspect": true
+}

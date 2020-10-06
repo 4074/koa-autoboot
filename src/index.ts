@@ -1,4 +1,5 @@
 import Koa from 'koa'
+import compose from 'koa-compose'
 import parser, { Route } from './parser'
 
 export { Controller, Middleware, Get, Post, Route } from './decorators/route'
@@ -20,19 +21,12 @@ export default function autoboot(options: KoaAutobootOptions): Koa.Middleware {
     })
 
   return async (ctx: Koa.Context, next: () => any): Promise<any> => {
-    for (const { method, regexp, handler, middlewares } of routes) {
+    for (const { method, regexp, middlewares } of routes) {
       if (ctx.method === method && regexp.test(ctx.path)) {
-        for (const m of middlewares) {
-          // TODO: pass a real next funciton
-          // eslint-disable-next-line no-await-in-loop
-          await m(ctx, async () => {
-            /**/
-          })
-        }
         // eslint-disable-next-line no-await-in-loop
-        return handler(ctx, next)
+        return compose(middlewares)(ctx, next)
       }
     }
-    await next()
+    return next()
   }
 }
