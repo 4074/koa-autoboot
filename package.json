@@ -2,9 +2,9 @@
   "name": "koa-autoboot",
   "version": "0.1.2",
   "description": "Auto bootstrap controllers for the koa app.",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "files": [
-    "build"
+    "dist/**/*"
   ],
   "peerDependencies": {
     "koa": "^2"
@@ -35,7 +35,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --config nodemon.json",
-    "build": "tsc"
+    "build": "tsc --project tsconfig.prod.json"
   },
   "repository": {
     "type": "git",

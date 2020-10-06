@@ -4,7 +4,7 @@
 	"exec": "node -r ts-node/register -r tsconfig-paths/register --inspect=4009 ./example/index.ts",
 	"ignore": [
 	],
-	"watch": ["./src", "./test"],
+	"watch": ["./src", "./example"],
 	"ext": "ts",
 	"inspect": true
 }
