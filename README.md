@@ -1,6 +1,6 @@
 # Koa Autoboot
 
-Auto boot routes from a controller folder.
+Auto bootstrap routes from a controller folder.
 
 ## Usage
 
