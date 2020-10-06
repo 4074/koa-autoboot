@@ -9,7 +9,7 @@ Base usage
 ```ts
 // controllers/IndexController.ts
 import Koa from 'koa'
-import { Controller, Get, Post, Middleware } from 'koa-autoboot'
+import { Controller, Get } from 'koa-autoboot'
 
 @Controller('/')
 export default class IndexController {
@@ -39,8 +39,8 @@ app.listen(4000)
 import KoaAutoboot, { Controller, Get, Post, Route, Middleware } from 'koa-autoboot'
 
 KoaAutoboot({
-  dir: __dirname // string, the folder of controller files
-  prefix: 'api' // string (optional), the prefix append to all routes path
+  dir: __dirname   // string, the folder of controller files
+  prefix: 'api'    // string (optional), the prefix append to all routes path
 })
 
 @Controller('/')
@@ -54,10 +54,10 @@ KoaAutoboot({
  * Add koa middlewares to the router.
  */
 export default class IndexController {
-  @Middleware([cors()]) // Add koa middlewares to a route.
-  @Get('greeting') // Add a `GET` route, pass the path (optional), default is the method name
-  @Post() // Add a `POST` route, pass the path (optional), default is the method name
-  @Route(['PUT']) // Add a route, pass the http methods, default is `['GET', 'POST']`
+  @Middleware([cors()])   // Add koa middlewares to a route.
+  @Get('greeting')        // Add a `GET` route, pass the path (optional), default is the method name.
+  @Post()                 // Add a `POST` route, pass the path (optional), default is the method name.
+  @Route(['PUT'])         // Add a route, pass the http methods, default is `['GET', 'POST']`.
   async greeting(ctx: Koa.Context): Promise<void> {
     ctx.body = 'Hello world'
   }
