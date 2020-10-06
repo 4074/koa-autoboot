@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import Koa from 'koa'
-import { Controller, Get, Post, Middleware } from '../src/index'
-import AliceMiddleware from './AliceMiddleware'
+import { Controller, Get, Post, Middleware } from '../../src/index'
+import AliceMiddleware from '../AliceMiddleware'
 
 @Controller()
 export default class MainController {
@@ -13,7 +13,7 @@ export default class MainController {
   @Middleware(AliceMiddleware())
   @Get()
   async hello(ctx: Koa.Context): Promise<void> {
-    ctx.body = 'Hello world'
+    ctx.body += 'Hello world'
   }
 
   @Post()

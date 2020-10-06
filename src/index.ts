@@ -11,7 +11,9 @@ export interface KoaAutobootOptions {
 
 export default function autoboot(options: KoaAutobootOptions): Koa.Middleware {
   let routes: RouteFinalOption[] = []
-  parser(options.dir, options.prefix)
+  const { dir, prefix } = options
+
+  parser(dir, prefix)
     .then((r) => {
       routes = r
     })
