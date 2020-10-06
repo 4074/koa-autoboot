@@ -1,21 +1,63 @@
 import fs from 'fs'
 import Koa from 'koa'
+import path from 'path'
 import { pathToRegexp } from 'path-to-regexp'
 import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from './consts'
+import { RouteOption } from './decorators/route'
 
-export interface Route {
+export interface RouteFinalOption extends RouteOption {
   regexp: RegExp
-  path: string
-  method: string
   middlewares: Koa.Middleware[]
+}
+
+function getRoutesFormClass(
+  ControllerClass: any,
+  prefix: string
+): RouteFinalOption[] {
+  const routes = []
+  const controller = new ControllerClass()
+  const proto = ControllerClass.prototype
+
+  const controllerMiddlewares = ControllerClass[MIDDLEWARE_KEY] || []
+
+  for (const methodName of Object.getOwnPropertyNames(proto)) {
+    const handler = controller[methodName]
+    if (!handler[ROUTE_KEY]) continue
+
+    const middlewares = controllerMiddlewares.concat(
+      handler[MIDDLEWARE_KEY] || []
+    )
+
+    for (const option of handler[ROUTE_KEY]) {
+      const finalPath = path.join('/', prefix, option.path).replace(/\/$/, '')
+
+      routes.push({
+        regexp: pathToRegexp(finalPath),
+        path: finalPath,
+        method: option.method,
+        middlewares: [...middlewares, handler]
+      })
+
+      // eslint-disable-next-line no-console
+      console.log(
+        `Route: ${option.method} ${finalPath}${
+          middlewares.length > 0
+            ? ` [${middlewares.map((m) => m.name).join(',')}]`
+            : ''
+        }`
+      )
+    }
+  }
+
+  return routes
 }
 
 export default async function parser(
   folderPath: string,
   prefix = ''
-): Promise<Route[]> {
+): Promise<RouteFinalOption[]> {
   const files = fs.readdirSync(folderPath)
-  const routes = []
+  let allRoutes = []
 
   // eslint-disable-next-line no-console
   console.log('Loading controllers...')
@@ -23,55 +65,21 @@ export default async function parser(
   for (const file of files) {
     if (!/\.(j|t)s$/.test(file)) continue
     // eslint-disable-next-line no-await-in-loop
-    const ControllerClass = (await import(`${folderPath}/${file}`)).default
+    const ControllerClass = (await import(path.join(folderPath, file))).default
+    const controllerPath = ControllerClass && ControllerClass[CONTROLLER_KEY]
 
-    if (
-      typeof ControllerClass !== 'function' ||
-      !ControllerClass[CONTROLLER_KEY]
-    )
-      continue
-
-    const controller = new ControllerClass()
-    const proto = ControllerClass.prototype
+    if (typeof ControllerClass !== 'function' || !controllerPath) continue
 
     // eslint-disable-next-line no-console
     console.log('Load', file, `for path ${ControllerClass[CONTROLLER_KEY]}`)
 
-    const controllerMiddlewares = ControllerClass[MIDDLEWARE_KEY] || []
-
-    for (const methodName of Object.getOwnPropertyNames(proto)) {
-      const handler = controller[methodName]
-      if (!handler[ROUTE_KEY]) continue
-
-      const middlewares = controllerMiddlewares.concat(
-        handler[MIDDLEWARE_KEY] || []
-      )
-
-      for (const { path, method } of handler[ROUTE_KEY]) {
-        const finalPath = (prefix ? `/${prefix}/${path}` : path).replace(
-          /\/{2}/g,
-          '/'
-        )
-
-        routes.push({
-          regexp: pathToRegexp(finalPath),
-          path: finalPath,
-          method,
-          middlewares: [...middlewares, handler]
-        })
-
-        // eslint-disable-next-line no-console
-        console.log(
-          `Route: ${method} ${finalPath}${
-            middlewares.length > 0
-              ? ` [${middlewares.map((m) => m.name).join(',')}]`
-              : ''
-          }`
-        )
-      }
-    }
+    const routes = getRoutesFormClass(
+      ControllerClass,
+      path.join(prefix, controllerPath)
+    )
+    allRoutes = allRoutes.concat(routes)
   }
 
   // console.log(routes)
-  return routes
+  return allRoutes
 }

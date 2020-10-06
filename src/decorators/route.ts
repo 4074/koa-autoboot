@@ -30,46 +30,28 @@ export interface MethodDecorator {
   ): TypedPropertyDescriptor<any>
 }
 
-function getControllerNameFromClass(target: NewableFunction): string {
+function getControllerPathFromClass(target: NewableFunction): string {
   return target.name.toLowerCase().replace(/controller$/, '')
 }
 
 export function Controller(path?: string): ClassDecorator {
   return (target) => {
-    const p = path || getControllerNameFromClass(target)
-    target[CONTROLLER_KEY] = /^\//.test(p) ? p : `/${p}`
+    target[CONTROLLER_KEY] = path || getControllerPathFromClass(target)
   }
 }
 
 export function Middleware(
   middleware: Koa.Middleware | Koa.Middleware[]
 ): MethodDecorator {
-  const ms = Array.isArray(middleware) ? middleware : [middleware]
   return (target, key, descriptor) => {
-    descriptor.value[MIDDLEWARE_KEY] = [
-      ...ms,
-      ...(descriptor.value[MIDDLEWARE_KEY] || [])
-    ]
+    let middlewares = Array.isArray(middleware) ? middleware : [middleware]
+    if (descriptor.value[MIDDLEWARE_KEY])
+      middlewares = middlewares.concat(descriptor.value[MIDDLEWARE_KEY])
+
+    descriptor.value[MIDDLEWARE_KEY] = middlewares
+
     return descriptor
   }
-}
-
-function createRouteOptions(
-  method: HTTPMethod | HTTPMethod[] = ['GET', 'POST'],
-  path?: string
-): RouteOption[] {
-  const options = []
-  if (Array.isArray(method)) {
-    for (const m of method) {
-      options.concat(createRouteOptions(m, path))
-    }
-  } else {
-    options.push({
-      method,
-      path: /^\//.test(path) ? path : `/${path}`
-    })
-  }
-  return options
 }
 
 export function Route(
@@ -77,7 +59,11 @@ export function Route(
   path?: string
 ): MethodDecorator {
   return (target, key, descriptor) => {
-    const options = createRouteOptions(method, path || key)
+    const methods = Array.isArray(method) ? method : [method]
+    const options: RouteOption[] = methods.map((m) => ({
+      method: m,
+      path: path || key
+    }))
 
     if (!descriptor.value[ROUTE_KEY]) descriptor.value[ROUTE_KEY] = []
     for (const op of options) {

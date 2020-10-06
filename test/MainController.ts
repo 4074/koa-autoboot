@@ -3,7 +3,7 @@ import Koa from 'koa'
 import { Controller, Get, Post, Middleware } from '../src/index'
 import AliceMiddleware from './AliceMiddleware'
 
-@Controller('/')
+@Controller()
 export default class MainController {
   @Get('/')
   async index(ctx: Koa.Context): Promise<void> {
