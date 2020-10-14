@@ -29,7 +29,10 @@ function getRoutesFormClass(
     )
 
     for (const option of handler[ROUTE_KEY]) {
-      const finalPath = path.join('/', prefix, option.path).replace(/\/$/, '')
+      const finalPath = path
+        .join('/', prefix, option.path)
+        .replace(/\/$/, '')
+        .replace(/\\/g, '/')
 
       routes.push({
         regexp: pathToRegexp(finalPath),
