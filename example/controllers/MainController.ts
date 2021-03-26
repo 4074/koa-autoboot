@@ -1,8 +1,11 @@
 /* eslint-disable class-methods-use-this */
 import Koa from 'koa'
-import { Controller, Get, Post, Middleware, Body, Ctx, Inject } from '../../src/index'
+import { Controller, Get, Post, Middleware, Ctx, Query, Body, RequestFile } from '../../src/index'
 import AliceMiddleware from '../AliceMiddleware'
 
+interface HelloParams {
+  name: string
+}
 interface PostParams {
   date: number
   other: string
@@ -18,8 +21,9 @@ export default class MainController {
 
   @Middleware(AliceMiddleware())
   @Get()
-  public async hello(): Promise<string> {
-    return 'Hello world'
+  @Query<HelloParams>({ name: 'string' })
+  public async hello(params: HelloParams): Promise<string> {
+    return `Hello ${params.name}`
   }
 
   @Post()
@@ -30,7 +34,7 @@ export default class MainController {
 
   @Post()
   @Body()
-  @Inject(ctx => (ctx.request as any).files)
+  @RequestFile()
   public async upload(files: { image: File }, body: { foo: string }): Promise<string> {
     return `File uploaded: ${files.image.name}, foo: ${body.foo}`
   }

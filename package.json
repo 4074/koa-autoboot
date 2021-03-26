@@ -11,17 +11,16 @@
     "koa-body": "^4"
   },
   "dependencies": {
-    "eslint-config-alloy": "^3.10.0",
     "fastest-validator": "^1.10.1",
     "koa-compose": "^4.1.0",
     "path-to-regexp": "^6.2.0"
   },
   "devDependencies": {
     "@types/koa": "^2.13.1",
-    "@types/koa-bodyparser": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
     "eslint": "^7.22.0",
+    "eslint-config-alloy": "^3.10.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "nodemon": "^2.0.7",

@@ -82,3 +82,7 @@ export function Body<T>(schema?: StrictValidationSchema<T>) {
 export function Query<T>(schema?: StrictValidationSchema<T>) {
   return InjectWithSchema<T>('query', schema)
 }
+
+export function RequestFile() {
+  return Inject(ctx => ctx.request.files)
+}

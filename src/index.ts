@@ -4,7 +4,7 @@ import parser, { RouteFinalOption } from './parser'
 import ReturnMiddleware from './middlewares/ReturnMiddleware'
 
 export { Controller, Middleware, Get, Post, Route } from './decorators/route'
-export { Inject, Ctx, Body, Query } from './decorators/inject'
+export { Inject, Ctx, Body, Query, RequestFile } from './decorators/inject'
 
 export interface KoaAutobootOptions {
   dir: string
