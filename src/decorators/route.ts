@@ -18,17 +18,13 @@ export interface RouteOption {
   path: string
 }
 
-export interface ClassDecorator {
-  (target: NewableFunction): void
-}
+export type ClassDecorator = (target: NewableFunction) => void
 
-export interface MethodDecorator {
-  (
-    target: Record<string, any>,
-    key: string,
-    descriptor: TypedPropertyDescriptor<any>
-  ): TypedPropertyDescriptor<any>
-}
+export type MethodDecorator = (
+  target: Record<string, any>,
+  key: string,
+  descriptor: TypedPropertyDescriptor<any>
+) => TypedPropertyDescriptor<any>
 
 function getControllerPathFromClass(target: NewableFunction): string {
   return target.name.toLowerCase().replace(/controller$/, '')

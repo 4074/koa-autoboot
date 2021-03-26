@@ -2,7 +2,7 @@ import fs from 'fs'
 import Koa from 'koa'
 import path from 'path'
 import { pathToRegexp } from 'path-to-regexp'
-import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from './consts'
+import { CONTROLLER_KEY, INJECT_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from './consts'
 import { RouteOption } from './decorators/route'
 
 export interface RouteFinalOption extends RouteOption {
@@ -27,6 +27,7 @@ function getRoutesFormClass(
     const middlewares = controllerMiddlewares.concat(
       handler[MIDDLEWARE_KEY] || []
     )
+    const injects = handler[INJECT_KEY] || []
 
     for (const option of handler[ROUTE_KEY]) {
       const finalPath = path
@@ -38,21 +39,27 @@ function getRoutesFormClass(
         regexp: pathToRegexp(finalPath),
         path: finalPath,
         method: option.method,
-        middlewares: [...middlewares, handler]
+        middlewares: [...middlewares, injectHandler(handler, injects)]
       })
 
       // eslint-disable-next-line no-console
       console.log(
-        `Route: ${option.method} ${finalPath}${
-          middlewares.length > 0
-            ? ` [${middlewares.map((m) => m.name).join(',')}]`
-            : ''
+        `Route: ${option.method} ${finalPath}${middlewares.length > 0
+          ? ` [${middlewares.map((m: CallableFunction) => m.name).join(',')}]`
+          : ''
         }`
       )
     }
   }
 
   return routes
+}
+
+function injectHandler(handler, injects: CallableFunction[]) {
+  return async (ctx: Koa.Context) => {
+    const injectValues = injects.map((fn) => fn(ctx))
+    return handler(...injectValues)
+  }
 }
 
 export default async function parser(
@@ -69,7 +76,7 @@ export default async function parser(
     if (!/\.(j|t)s$/.test(file)) continue
     // eslint-disable-next-line no-await-in-loop
     const ControllerClass = (await import(path.join(folderPath, file))).default
-    const controllerPath = ControllerClass && ControllerClass[CONTROLLER_KEY]
+    const controllerPath = ControllerClass?.[CONTROLLER_KEY]
 
     if (typeof ControllerClass !== 'function' || !controllerPath) continue
 

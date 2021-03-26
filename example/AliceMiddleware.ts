@@ -6,8 +6,6 @@ export default (): Koa.Middleware => {
     next: () => any
   ): Promise<any> {
     ctx.res.setHeader('Username', 'Alice')
-    ctx.body = 'I am Alice. '
-    await next()
-    ctx.body += '!'
+    ctx.body = `I am Alice. ${await next()}!`
   }
 }

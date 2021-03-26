@@ -7,30 +7,27 @@
     "dist/**/*"
   ],
   "peerDependencies": {
-    "koa": "^2"
+    "koa": "^2",
+    "koa-body": "^4"
   },
   "dependencies": {
+    "eslint-config-alloy": "^3.10.0",
     "koa-compose": "^4.1.0",
     "path-to-regexp": "^6.2.0"
   },
   "devDependencies": {
-    "@types/koa": "^2.11.4",
-    "@typescript-eslint/eslint-plugin": "^4.3.0",
-    "@typescript-eslint/parser": "^4.3.0",
-    "eslint": "^7.10.0",
-    "eslint-config-airbnb": "^18.2.0",
-    "eslint-config-prettier": "^6.12.0",
-    "eslint-config-uncley": "^0.1.6",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.21.3",
-    "koa": "^2.13.0",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.1.2",
+    "@types/koa": "^2.13.1",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "eslint": "^7.22.0",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
     "reflect-metadata": "^0.1.13",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
