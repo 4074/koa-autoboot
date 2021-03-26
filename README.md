@@ -26,15 +26,18 @@ import path from 'path'
 import Koa from 'koa'
 
 const app = new Koa()
-app.use(KoaAutoboot({
-  dir: path.join(__dirname, 'controllers')
-}))
+app.use(
+  KoaAutoboot({
+    dir: path.join(__dirname, 'controllers'),
+  }),
+)
 app.listen(4000)
 ```
 
 `curl http://localhost:4000/greeting` will get `Hello world`.
 
 ## APIs
+
 ```ts
 import KoaAutoboot, { Controller, Get, Post, Route, Middleware } from 'koa-autoboot'
 

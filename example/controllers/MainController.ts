@@ -3,6 +3,11 @@ import Koa from 'koa'
 import { Controller, Get, Post, Middleware, Body, Ctx, Inject } from '../../src/index'
 import AliceMiddleware from '../AliceMiddleware'
 
+interface PostParams {
+  date: number
+  other: string
+}
+
 @Controller()
 export default class MainController {
   @Get('/')
@@ -18,9 +23,9 @@ export default class MainController {
   }
 
   @Post()
-  @Body()
-  public async post(body: { date: number }): Promise<string> {
-    return `Post at ${body.date}`
+  @Body<PostParams>({ date: 'number', other: { type: 'string', optional: true } })
+  public async post(params: PostParams): Promise<string> {
+    return `Post at ${params.date}`
   }
 
   @Post()

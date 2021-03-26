@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "eslint-config-alloy": "^3.10.0",
+    "fastest-validator": "^1.10.1",
     "koa-compose": "^4.1.0",
     "path-to-regexp": "^6.2.0"
   },
