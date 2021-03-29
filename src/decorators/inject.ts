@@ -27,7 +27,7 @@ type StrictValidationSchema<T = any> = {
   /**
    * Object properties which are not specified on the schema are ignored by default.
    * If you set the $$strict option to true any additional properties will result in an strictObject error.
-   * @default true
+   * @default false
    */
   $$strict?: boolean | "remove";
 } & {
@@ -51,7 +51,6 @@ export function Inject(
 function InjectWithSchema<T>(key: string, schema?: StrictValidationSchema<T>) {
   const v = new Validator()
   const check = schema && v.compile<T>({
-    $$strict: true,
     ...schema
   })
   return Inject((ctx: Koa.Context) => {
