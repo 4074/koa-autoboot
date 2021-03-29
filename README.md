@@ -6,6 +6,7 @@ Auto bootstrap routes from a controller folder.
 - Use the return value as response body
 - Inject `ctx`, `body`, `query` or custom data
 - Build-in validator for `body` and `query` base on [`fastest-validator`](https://github.com/icebob/fastest-validator)
+- Log request in and out
 
 ## Usage
 

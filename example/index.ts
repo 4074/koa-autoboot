@@ -4,7 +4,13 @@ import KoaBody from 'koa-body'
 import KoaAutoboot from '../src/index'
 
 new Koa().use(KoaBody({ multipart: true })).use(KoaAutoboot(
-  { dir: path.join(__dirname, 'controllers') },
+  {
+    dir: path.join(__dirname, 'controllers'),
+    onRequest: (info) => {
+      // eslint-disable-next-line no-console
+      console.info(info)
+    }
+  },
   // eslint-disable-next-line no-console
   () => console.log('Booted!'))
 ).listen(4000, () => {
