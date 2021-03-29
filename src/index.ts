@@ -5,7 +5,7 @@ import ReturnMiddleware from './middlewares/ReturnMiddleware'
 import LogMiddleware, { logger, LoggerHandle } from './middlewares/LogMiddleware'
 
 export { Controller, Middleware, Get, Post, Route } from './decorators/route'
-export { Inject, Ctx, Body, Query, RequestFile } from './decorators/inject'
+export { Inject, Ctx, Body, Query, RequestFile, Session } from './decorators/inject'
 
 export interface KoaAutobootOptions {
   dir: string

@@ -86,3 +86,7 @@ export function Query<T>(schema?: StrictValidationSchema<T>) {
 export function RequestFile() {
   return Inject(ctx => (ctx.request as any).files)
 }
+
+export function Session() {
+  return Inject(ctx => (ctx as any).session)
+}
