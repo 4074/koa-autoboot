@@ -71,25 +71,28 @@ export default async function parser(
 
   // eslint-disable-next-line no-console
   console.log('Loading controllers...')
+  const promises = []
 
   for (const file of files) {
     if (!/\.(j|t)s$/.test(file)) continue
-    // eslint-disable-next-line no-await-in-loop
-    const ControllerClass = (await import(path.join(folderPath, file))).default
-    const controllerPath = ControllerClass?.[CONTROLLER_KEY]
+    const promise = import(path.join(folderPath, file)).then((exported) => {
+      const ControllerClass = exported.default
+      const controllerPath = ControllerClass?.[CONTROLLER_KEY]
 
-    if (typeof ControllerClass !== 'function' || !controllerPath) continue
-
-    // eslint-disable-next-line no-console
-    console.log('Load', file, `for path ${ControllerClass[CONTROLLER_KEY]}`)
-
-    const routes = getRoutesFormClass(
-      ControllerClass,
-      path.join(prefix, controllerPath)
-    )
-    allRoutes = allRoutes.concat(routes)
+      if (typeof ControllerClass === 'function' && controllerPath) {
+        // eslint-disable-next-line no-console
+        console.log('Load', file, `for path ${ControllerClass[CONTROLLER_KEY]}`)
+        const routes = getRoutesFormClass(
+          ControllerClass,
+          path.join(prefix, controllerPath)
+        )
+        allRoutes = allRoutes.concat(routes)
+      }
+    })
+    promises.push(promise)
   }
 
-  // console.log(routes)
+  await Promise.all(promises)
+
   return allRoutes
 }
