@@ -11,13 +11,8 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
-    "typeRoots": [
-      "node_modules/@types",
-      "typings"
-    ],
+    "typeRoots": ["node_modules/@types", "typings"],
     "esModuleInterop": true
   },
-  "include": [
-    "src/**/*", "test/**/*", "example/**/*"
-  ]
+  "include": ["src", "example"]
 }

@@ -10,7 +10,13 @@
       "name": "Server",
       "port": 4009,
       "restart": true,
-      "protocol": "inspector",
+      "protocol": "inspector"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Jest",
+      "port": 9229
     }
   ]
 }

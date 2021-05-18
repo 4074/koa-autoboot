@@ -1,19 +1,5 @@
-import path from 'path'
-import Koa from 'koa'
-import KoaBody from 'koa-body'
-import KoaAutoboot from '../src/index'
+import server from './server'
 
-new Koa().use(KoaBody({ multipart: true })).use(KoaAutoboot(
-  {
-    dir: path.join(__dirname, 'controllers'),
-    onRequest: (info) => {
-      // eslint-disable-next-line no-console
-      console.info(info)
-    }
-  },
-  // eslint-disable-next-line no-console
-  () => console.log('Booted!'))
-).listen(4000, () => {
-  // eslint-disable-next-line no-console
-  console.log('App listening on 4000')
-})
+// eslint-disable-next-line no-console
+server(4000).then(() => console.log('App listening on 4000'))
+

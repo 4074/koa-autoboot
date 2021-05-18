@@ -2,12 +2,12 @@ import Koa from 'koa'
 
 type ReturnBodyParser = (value: any) => any
 
-const defaultParser = (value: any) => {
-  const body = { status: true, message: '操作成功', data: null }
+export const defaultParser = (value: any) => {
+  const body = { status: true, message: 'Success', data: null }
 
   if (value === false || value instanceof Error) {
     body.status = false
-    body.message = value.message || '操作失败'
+    body.message = value.message || 'Fail'
   } else {
     body.data = value
   }

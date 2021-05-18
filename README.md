@@ -110,3 +110,19 @@ npm start
 ```
 
 Will run the example koa server with nodemon.
+
+## Test Coverage
+
+| File                | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
+| ------------------- | ------- | -------- | ------- | ------- | ----------------- |
+| All files           | 94.71   | 76.81    | 86.27   | 96.55   |
+| src                 | 97.5    | 83.87    | 82.61   | 98.46   |
+| consts.ts           | 100     | 100      | 100     | 100     |
+| index.ts            | 96.97   | 80       | 73.33   | 95.45   | 29                |
+| parser.ts           | 97.67   | 85.71    | 100     | 100     | 77-82             |
+| src/decorators      | 91.53   | 72       | 86.96   | 96.15   |
+| inject.ts           | 87.88   | 83.33    | 76.92   | 96.43   | 90                |
+| route.ts            | 96.15   | 61.54    | 100     | 95.83   | 45                |
+| src/middlewares     | 93.55   | 69.23    | 100     | 92.86   |
+| LogMiddleware.ts    | 100     | 75       | 100     | 100     | 72                |
+| ReturnMiddleware.ts | 85.71   | 66.67    | 100     | 83.33   | 9-10              |
