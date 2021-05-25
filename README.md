@@ -26,7 +26,7 @@ import { Controller, Get, Ctx } from 'koa-autoboot'
 @Controller('/')
 export default class IndexController {
   @Get()
-  @Ctx() // Inject the `ctx.request.body` as the argument.
+  @Ctx() // Inject the `ctx` as the argument.
   async greeting(ctx: Koa.Context) {
     ctx.body = 'Hello world'
   }
@@ -54,53 +54,69 @@ app.listen(4000)
 ```ts
 import KoaAutoboot, { Controller, Post, Route, Middleware, Body } from 'koa-autoboot'
 
-KoaAutoboot({
-  dir: __dirname   // string, the folder of controller files
-  prefix: 'api'    // string (optional), the prefix append to all routes path
-  // function (optional), parse return value to response body.
-  // If return value is `undefined`, parser will not be call.
-  // Default parser:
-  returnParser: (value: any) => {
-    const body = { status: true, message: 'Success', data: null }
+KoaAutoboot(
+  // The options
+  {
+    // string, the folder of controller files
+    dir: __dirname,
 
-    if (value === false || value instanceof Error) {
-      body.status = false
-      body.message = value.message || 'Fail'
-    } else {
-      body.data = value
-    }
+    // string (optional), the prefix append to all routes path
+    prefix: 'api',
 
-    return body
-  }
-})
+    // function (optional), parse return value to response body.
+    // If return value is `undefined`, parser will not be call.
+    // Default parser:
+    returnParser: (value: any) => {
+      const body = { status: true, message: 'Success', data: null }
+
+      if (value === false || value instanceof Error) {
+        body.status = false
+        body.message = value.message || 'Fail'
+      } else {
+        body.data = value
+      }
+
+      return body
+    },
+  },
+)
 
 interface GreetingParams {
   name: string
 }
 
-@Controller('/')
 /**
  * Mark the class is a router.
  * Pass a router path (optional), the default values is className.toLowerCase().replace('controller', '')
  * For this class, the default router path is `index`
  */
+@Controller('/')
+// Add koa middlewares to the router.
 @Middleware([cors()])
-/**
- * Add koa middlewares to the router.
- */
 export default class IndexController {
-  @Middleware([cors()])   // Add koa middlewares to a route.
-  @Post()                 // Add a `POST` route, pass the path (optional), default is the method name.
-  @Route(['PUT'])         // Add a route, pass the http methods, default is `['GET', 'POST']`.
-  @Body()                 // Inject the `ctx.request.body` as the argument, pass the validate schema (optional)
-  async greeting(params: GreetingParams): Promise<string> {
-    // Use return value to response feature
-    return `Hello, ${params.name}`
+  // Add koa middlewares to a route.
+  @Middleware([cors()])
+
+  // Add a `POST` route, pass the path (optional), default is the method name.
+  @Post()
+
+  // Add a route, pass the http methods, default is `['GET', 'POST']`.
+  @Route(['PUT'])
+
+  // Inject the `ctx.request.body` as the argument, pass the validate schema (optional)
+  @Body({ name: 'string' })
+
+  // Inject the `ctx.request.query` as the argument
+  @Query()
+
+  // Inject the `ctx` as the argument
+  @Ctx()
+  async greeting(ctx: Koa.Context, query: any, body: GreetingParams): Promise<string> {
+    // Use return value as the response
+    return `Hello, ${body.name}`
   }
 }
 ```
-
-Yes, this is all apis.
 
 ## Development
 
