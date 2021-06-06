@@ -1,0 +1,13 @@
+language: node_js
+branches:
+  only:
+    - master
+node_js:
+  - 14
+cache:
+  yarn: true
+  directories:
+    - node_modules
+after_script:
+  # only upload the coverage.json file
+  - bash <(curl -s https://codecov.io/bash) -f coverage/coverage-final.json
