@@ -28,3 +28,4 @@ src
 .*
 assets/**/*.less
 .vscode
+coverage

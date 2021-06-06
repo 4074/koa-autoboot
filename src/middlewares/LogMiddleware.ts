@@ -45,8 +45,8 @@ export default function middleware(): Koa.Middleware {
     const info: LogInfo = {
       host: ctx.host,
       path: ctx.path,
-      query: ctx.request.query,
-      body: ctx.request.body,
+      query: (ctx.request as any).query,
+      body: (ctx.request as any).body,
       referer: ctx.header.referer,
       ip: ctx.ip,
       userAgent: ctx.header['user-agent'],
