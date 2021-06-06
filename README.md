@@ -136,4 +136,4 @@ Will run the example koa server with nodemon.
 [travis-image]: https://img.shields.io/travis/com/4074/koa-autoboot?style=flat-square
 [travis-url]: https://travis-ci.com/4074/koa-autoboot
 [codecov-image]: https://img.shields.io/codecov/c/github/4074/koa-autoboot.svg?style=flat-square
-[codecov-url]: https://app.codecov.io/gh/4074/koa-autoboot?branch=main
+[codecov-url]: https://app.codecov.io/gh/4074/koa-autoboot?branch=master
