@@ -1,6 +1,5 @@
 import Koa from 'koa'
-import compose from 'koa-compose'
-import parser, { RouteFinalOption } from './parser'
+import Router from './router'
 import ReturnMiddleware from './middlewares/ReturnMiddleware'
 import LogMiddleware, { logger, LoggerHandle } from './middlewares/LogMiddleware'
 
@@ -14,20 +13,15 @@ export interface KoaAutobootOptions {
   onRequest?: LoggerHandle
 }
 
-export default function autoboot(options: KoaAutobootOptions, callback?: CallableFunction): Koa.Middleware {
-  let routes: RouteFinalOption[] = []
-  const { dir, prefix, returnParser, onRequest } = options
-  const defaultMiddlewares = [LogMiddleware(), ReturnMiddleware(returnParser)]
+type AnyFunction = (...args: any[]) => any
 
-  parser(dir, prefix)
-    .then((r) => {
-      routes = r
-      callback?.()
-    })
-    .catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error(err)
-    })
+export default function autoboot(options: KoaAutobootOptions, callback?: AnyFunction): Koa.Middleware {
+  const { dir, prefix, returnParser, onRequest } = options
+  const middlewares = [LogMiddleware(), ReturnMiddleware(returnParser)]
+
+  // Load all controller files.
+  const router = new Router(middlewares)
+  router.load(dir, prefix).then(callback)
 
   // Add log listeners
   if (typeof onRequest === 'function') {
@@ -35,12 +29,6 @@ export default function autoboot(options: KoaAutobootOptions, callback?: Callabl
     logger.on('out', onRequest)
   }
 
-  return async (ctx: Koa.Context, next: () => any): Promise<any> => {
-    for (const { method, regexp, middlewares } of routes) {
-      if (ctx.method === method && regexp.test(ctx.path)) {
-        return compose([...defaultMiddlewares, ...middlewares])(ctx, next)
-      }
-    }
-    return next()
-  }
+  // Resolve the requests.
+  return router.resolve
 }
