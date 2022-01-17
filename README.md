@@ -67,6 +67,9 @@ KoaAutoboot(
     // string (optional), the prefix append to all routes path
     prefix: 'api',
 
+    // (string | RegExp)[] | ((s: string) => boolean), which files should be ignore in dir.
+    ignore: [],
+
     // function (optional), parse return value to response body.
     // If return value is `undefined`, parser will not be call.
     // Default parser:

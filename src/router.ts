@@ -1,5 +1,6 @@
 import Koa from 'koa'
 import compose from 'koa-compose'
+import { KoaAutobootOptions } from 'src'
 import parser, { RouteFinalOption } from './parser'
 
 export default class Router {
@@ -11,9 +12,9 @@ export default class Router {
     this.defaultMiddlewares = middlewares
   }
 
-  public load = async (dir: string, prefix: string) => {
+  public load = async (dir: string, prefix: string, ignore: KoaAutobootOptions['ignore']) => {
     // Load the controller files.
-    return parser(dir, prefix)
+    return parser(dir, prefix, ignore)
       .then((r) => {
         this.routes = r
       }, (err) => {

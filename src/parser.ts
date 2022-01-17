@@ -2,6 +2,7 @@ import fs from 'fs'
 import Koa from 'koa'
 import path from 'path'
 import { pathToRegexp } from 'path-to-regexp'
+import { KoaAutobootOptions } from 'src'
 import { CONTROLLER_KEY, INJECT_KEY, MIDDLEWARE_KEY, ROUTE_KEY } from './consts'
 import { RouteOption } from './decorators/route'
 
@@ -62,9 +63,27 @@ function injectHandler(handler, injects: CallableFunction[]) {
   }
 }
 
+const isMatchIgnore = (file: string, ignore: KoaAutobootOptions['ignore']) => {
+  if (ignore) {
+    if (Array.isArray(ignore)) {
+      for (const ig of ignore) {
+        if (typeof ig === 'string') {
+          if (ig === file) return true
+        } else {
+          if (ig.test(file)) return true
+        }
+      }
+    } else if (typeof ignore === 'function') {
+      return ignore(file)
+    }
+  }
+  return false
+}
+
 export default async function parser(
   folderPath: string,
-  prefix = ''
+  prefix = '',
+  ignore: KoaAutobootOptions['ignore']
 ): Promise<RouteFinalOption[]> {
   const files = fs.readdirSync(folderPath)
   let allRoutes = []
@@ -74,7 +93,8 @@ export default async function parser(
   const promises = []
 
   for (const file of files) {
-    if (!/\.(j|t)s$/.test(file)) continue
+    if (!/\.(j|t)s$/.test(file) || /\.d.ts$/.test(file) || isMatchIgnore(file, ignore)) continue
+
     const promise = import(path.join(folderPath, file)).then((exported) => {
       const ControllerClass = exported.default
       const controllerPath = ControllerClass?.[CONTROLLER_KEY]

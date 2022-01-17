@@ -9,6 +9,7 @@ export { Inject, Ctx, Body, Query, RequestFile, Session } from './decorators/inj
 export interface KoaAutobootOptions {
   dir: string
   prefix?: string,
+  ignore?: (string | RegExp)[] | ((s: string) => boolean)
   returnParser?: (value: any) => any
   onRequest?: LoggerHandle
 }
@@ -16,12 +17,12 @@ export interface KoaAutobootOptions {
 type AnyFunction = (...args: any[]) => any
 
 export default function autoboot(options: KoaAutobootOptions, callback?: AnyFunction): Koa.Middleware {
-  const { dir, prefix, returnParser, onRequest } = options
+  const { dir, prefix, ignore, returnParser, onRequest } = options
   const middlewares = [LogMiddleware(), ReturnMiddleware(returnParser)]
 
   // Load all controller files.
   const router = new Router(middlewares)
-  router.load(dir, prefix).then(callback)
+  router.load(dir, prefix, ignore).then(callback)
 
   // Add log listeners
   if (typeof onRequest === 'function') {
